@@ -7,7 +7,7 @@ public class RGB {
 
     private static Pattern RGB_PATTERN = Pattern.compile("[0-9a-fA-F]{6}");
 
-    public static int[] Int2ARGB(int rgb) { // ARGB
+    public static int[] int2argb(int rgb) { // ARGB
         final int[] ints = new int[4];
 
         ints[0] = 0xFF & (rgb >> 24);//A
@@ -18,7 +18,7 @@ public class RGB {
         return ints;
     }
 
-    public static int[] Int2RGB(int rgb) { // RGB
+    public static int[] int2rgb(int rgb) { // RGB
         final int[] ints = new int[3];
 
         ints[0] = 0xFF & (rgb >> 16);//R
@@ -28,7 +28,7 @@ public class RGB {
         return ints;
     }
 
-    public static int RGB2Int(int[] rgb) { // RGB、ARGB 通用
+    public static int rgb2int(int[] rgb) { // RGB、ARGB 通用
         final int length = rgb.length;
         int i = 0;
 
@@ -41,7 +41,7 @@ public class RGB {
 
     /**/
 
-    public static String RGB2HEX(int[] rgb) { // RGB、ARGB 通用
+    public static String rgb2hex(int[] rgb) { // RGB、ARGB 通用
         final StringBuilder str = new StringBuilder();
 
         for (int i : rgb) {
@@ -55,7 +55,7 @@ public class RGB {
         return str.toString().toUpperCase();
     }
 
-    public static int[] HEX2RGB(String rgb) { // RGB、ARGB 通用
+    public static int[] hex2rgb(String rgb) { // RGB、ARGB 通用
         final int length = rgb.length();
         final int[] ints = new int[length / 2];
 
@@ -67,13 +67,13 @@ public class RGB {
     }
 
     public static String reverse(String rgb) { // RGB、ARGB 通用
-        final int[] ints = HEX2RGB(rgb);
+        final int[] ints = hex2rgb(rgb);
 
         for (int i = 0; i < ints.length; i++) {
             ints[i] = 255 - ints[i];
         }
 
-        return RGB2HEX(ints);
+        return rgb2hex(ints);
     }
 
     public static boolean isHEXColor(String rgb) {
