@@ -17,6 +17,8 @@ public class ReverseColor {
             while ((i = in.read()) != -1) {
                 out.write(i);
 
+/*
+                // for notepad2-mod
                 if (i == '#') {
                     in.read(data);
 
@@ -26,17 +28,24 @@ public class ReverseColor {
                         out.write(reverse(data));
                     }
                 }
+*/
+                // for notepad-plus-plus
+                if (i == '"') {
+                    in.read(data);
+                    i = in.read();
+
+                    if (i == '"' && RGB.isHEXColor(new String(data))) {
+                        out.write(reverse(data));
+                    } else {
+                        out.write(data); // 不是 HEX Color
+                    }
+                    out.write(i);
+                }
             }
         }
     }
 
     private static byte[] reverse(byte[] data) {
-        final int[] rgb = RGB.HEX2RGB(new String(data));
-
-        for (int i = 0; i < rgb.length; i++) {
-            rgb[i] = 255 - rgb[i];
-        }
-
-        return RGB.RGB2HEX(rgb).getBytes(); // Charset.defaultCharset() => UTF-8
+        return RGB.reverse(new String(data)).getBytes(); // Charset.defaultCharset() => UTF-8
     }
 }

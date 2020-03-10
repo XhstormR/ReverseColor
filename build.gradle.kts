@@ -1,54 +1,53 @@
-buildscript {
-    repositories {
-        maven("http://maven.aliyun.com/nexus/content/groups/public/")
-    }
-
-    dependencies {
-    }
-}
-
-repositories {
-    maven("http://maven.aliyun.com/nexus/content/groups/public/")
-}
-
-dependencies {
-}
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 version = "1.0-SNAPSHOT"
 
 plugins {
     idea
     application
+    kotlin("jvm") version "1.3.70"
+    id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
 }
 
 application {
     mainClassName = "com.xhstormr.reversecolor.ReverseColor"
 }
 
-tasks {
-    val beforeJar by creating {
-        buildDir
-                .resolve("tmp").apply { mkdirs() }
-                .resolve("1.txt").apply { createNewFile() }
-                .bufferedWriter().use { configurations.compile.forEach { s -> it.write("$s\n") } }
-    }
+repositories {
+    maven("https://maven.aliyun.com/repository/jcenter")
+}
 
+dependencies {
+    implementation(kotlin("stdlib-jdk8"))
+}
+
+tasks {
     withType<Jar> {
-        dependsOn(beforeJar)
-        version = ""
-        manifest.attributes["Main-Class"] = "com.xhstormr.reversecolor.ReverseColor"
-        from(buildDir.resolve("tmp/1.txt").bufferedReader().readLines().map { zipTree(it) })
+        manifest.attributes["Main-Class"] = application.mainClassName
+        from(configurations.runtimeClasspath.get().map { zipTree(it) })
     }
 
     withType<Wrapper> {
-        gradleVersion = "4.6"
+        gradleVersion = "6.2.2"
         distributionType = Wrapper.DistributionType.ALL
     }
 
+    withType<Test> {
+        useJUnitPlatform()
+    }
+
+    withType<KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "12"
+            freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=enable")
+        }
+    }
+
     withType<JavaCompile> {
-        options.encoding = "UTF-8"
+        options.encoding = Charsets.UTF_8.name()
+        options.isFork = true
         options.isIncremental = true
-        sourceCompatibility = JavaVersion.VERSION_1_8.toString()
-        targetCompatibility = JavaVersion.VERSION_1_8.toString()
+        sourceCompatibility = JavaVersion.VERSION_12.toString()
+        targetCompatibility = JavaVersion.VERSION_12.toString()
     }
 }

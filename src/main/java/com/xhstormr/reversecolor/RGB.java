@@ -1,6 +1,12 @@
 package com.xhstormr.reversecolor;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class RGB {
+
+    private static Pattern RGB_PATTERN = Pattern.compile("[0-9a-fA-F]{6}");
+
     public static int[] Int2ARGB(int rgb) { // ARGB
         final int[] ints = new int[4];
 
@@ -58,5 +64,20 @@ public class RGB {
         }
 
         return ints;
+    }
+
+    public static String reverse(String rgb) { // RGB、ARGB 通用
+        final int[] ints = HEX2RGB(rgb);
+
+        for (int i = 0; i < ints.length; i++) {
+            ints[i] = 255 - ints[i];
+        }
+
+        return RGB2HEX(ints);
+    }
+
+    public static boolean isHEXColor(String rgb) {
+        Matcher matcher = RGB_PATTERN.matcher(rgb);
+        return matcher.matches();
     }
 }
