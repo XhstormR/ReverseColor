@@ -9,8 +9,8 @@ public class ReverseColor {
             return;
         }
 
-        try (InputStream in = new FileInputStream(args[0]);
-             OutputStream out = new FileOutputStream(args[1])) {
+        try (InputStream in = new BufferedInputStream(new FileInputStream(args[0]));
+             OutputStream out = new BufferedOutputStream(new FileOutputStream(args[1]))) {
             final byte[] data = new byte[6];
 
             int i;

@@ -1,6 +1,16 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import proguard.gradle.ProGuardTask
 
 version = "1.0-SNAPSHOT"
+
+buildscript {
+    repositories {
+        maven("https://maven.aliyun.com/repository/jcenter")
+    }
+    dependencies {
+        classpath("net.sf.proguard:proguard-gradle:6.2.2")
+    }
+}
 
 plugins {
     idea
@@ -22,9 +32,24 @@ dependencies {
 }
 
 tasks {
+    val proguard by creating(ProGuardTask::class) {
+        dependsOn(jar)
+
+        val file = jar.get().archiveFile.get().asFile
+        injars(file)
+        outjars(file.resolveSibling("proguard.jar"))
+
+        configuration("proguard/proguard-rules.pro")
+
+        libraryjars("${System.getProperty("java.home")}/jmods/")
+    }
+
     withType<Jar> {
         manifest.attributes["Main-Class"] = application.mainClassName
         from(configurations.runtimeClasspath.get().map { zipTree(it) })
+        exclude("**/*.kotlin_module")
+        exclude("**/*.kotlin_metadata")
+        exclude("**/*.kotlin_builtins")
     }
 
     withType<Wrapper> {
