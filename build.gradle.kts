@@ -46,6 +46,7 @@ tasks {
 
     withType<Jar> {
         manifest.attributes["Main-Class"] = application.mainClassName
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         from(configurations.runtimeClasspath.get().map { zipTree(it) })
         exclude("**/*.kotlin_module")
         exclude("**/*.kotlin_metadata")
